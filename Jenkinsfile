@@ -14,10 +14,11 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                sh 'mvn clean package'
-            }
-        }
+   		 	steps {
+      		  	sh 'mvn -Dmaven.repo.local=target/.m2repo clean package'
+    		}
+		}
+
 
         stage('Test') {
             steps {
