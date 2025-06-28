@@ -1,15 +1,12 @@
 pipeline {
-    agent any
-
-    tools {
-        maven 'Maven'   // Ensure this matches the name in Jenkins -> Global Tool Configuration
-        jdk 'default'   // Or your JDK name
+    agent {
+        docker { image 'maven:3.9.6-eclipse-temurin-21' }
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'file:///home/hamza/eclipse-workspace/encrypt'
+                git branch: 'master', url: 'https://github.com/necromancer404/devops.git'
             }
         }
 
