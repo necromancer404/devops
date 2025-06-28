@@ -9,11 +9,17 @@ import java.util.Scanner;
 
 public class FileEncryptorCLI {
 
-    private static final String HOME_DIRECTORY = System.getProperty("user.home"); // Default home directory
+    private static final String HOME_DIRECTORY = System.getProperty("user.home");
     private static Scanner scanner = new Scanner(System.in);
     private static String selectedFilePath = "";
 
     public static void main(String[] args) {
+        if (args.length > 0 && args[0].equals("decrypt")) {
+            // For test automation
+            decryptFromArgs(args);
+            return;
+        }
+
         System.out.println("Welcome to the File Encryptor/Decryptor CLI");
         while (true) {
             listFilesAndDirectories(HOME_DIRECTORY);
@@ -35,7 +41,21 @@ public class FileEncryptorCLI {
         }
     }
 
-    // List files and directories in the current directory
+    private static void decryptFromArgs(String[] args) {
+        if (args.length != 3) {
+            System.out.println("Invalid args. Usage: decrypt <file> <password>");
+            return;
+        }
+        String file = args[1];
+        String password = args[2];
+        try {
+            decryptFile(file, password);
+            System.out.println("Decryption done!");
+        } catch (Exception e) {
+            System.out.println("Error decrypting: " + e.getMessage());
+        }
+    }
+
     private static void listFilesAndDirectories(String path) {
         File directory = new File(path);
         File[] files = directory.listFiles();
@@ -47,7 +67,6 @@ public class FileEncryptorCLI {
         }
     }
 
-    // Prompt the user to either encrypt or decrypt the selected file
     private static void promptAction() {
         System.out.println("\nDo you want to:");
         System.out.println("1. Encrypt the file");
@@ -81,8 +100,7 @@ public class FileEncryptorCLI {
         }
     }
 
-    // Encrypt a file with the given password
-    private static void encryptFile(String inputFile, String password) throws Exception {
+    public static void encryptFile(String inputFile, String password) throws Exception {
         Key key = new SecretKeySpec(password.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -102,14 +120,13 @@ public class FileEncryptorCLI {
         }
     }
 
-    // Decrypt a file with the given password
-    private static void decryptFile(String inputFile, String password) throws Exception {
+    public static void decryptFile(String inputFile, String password) throws Exception {
         Key key = new SecretKeySpec(password.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, key);
 
         File input = new File(inputFile);
-        File output = new File(inputFile.substring(0, inputFile.lastIndexOf(".enc")));
+        File output = new File(inputFile.replace(".enc", ""));
 
         try (FileInputStream fileInputStream = new FileInputStream(input);
              FileOutputStream fileOutputStream = new FileOutputStream(output);
@@ -121,5 +138,6 @@ public class FileEncryptorCLI {
                 cipherOutputStream.write(buffer, 0, bytesRead);
             }
         }
+        System.out.println("Decrypted file created at: " + output.getAbsolutePath());
     }
 }
