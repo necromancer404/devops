@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'maven:3.9.6-eclipse-temurin-21'
-            args '-v $HOME/.m2:/root/.m2'
+            args '-v /var/jenkins_home/.m2:/root/.m2'
         }
     }
 
@@ -13,20 +13,14 @@ pipeline {
             }
         }
 
-        stage('Build') {
-   		 	steps {
-      		  	sh 'mvn -Dmaven.repo.local=target/.m2repo clean package'
-    		}
-		}
-
-
-        stage('Test') {
+        stage('Build & Test') {
             steps {
-                sh 'mvn test'
+                // Uses the mounted .m2 to cache dependencies, runs tests automatically
+                sh 'mvn clean package'
             }
         }
 
-        stage('Archive Artifacts') {
+        stage('Archive Artifacts and Reports') {
             steps {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                 junit 'target/surefire-reports/*.xml'
