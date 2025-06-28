@@ -1,0 +1,15 @@
+# Ignore Maven target folder
+/target/
+
+# Ignore IDE-specific files (IntelliJ, Eclipse, etc.)
+.idea/
+*.iml
+*.log
+
+# Java compiled files
+*.class
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
