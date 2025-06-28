@@ -36,7 +36,7 @@
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin to ensure Java 8 compatibility -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -55,9 +55,21 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>com.devops.encrypt.FileEncryptorCLI</Main-Class> <!-- Corrected Main Class -->
+                            <Main-Class>com.devops.encrypt.FileEncryptorCLI</Main-Class>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+
+            <!-- ✅ Maven Surefire Plugin for running JUnit tests and generating test reports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
