@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
     		steps {
-        		git credentialsId: 'GitHub Credentials for Jenkins', branch: 'master', url: 'https://github.com/necromancer404/devops.git'
+        		git credentialsId: 'github-https-pat', branch: 'master', url: 'https://github.com/necromancer404/devops.git'
     		}
 		}
 
