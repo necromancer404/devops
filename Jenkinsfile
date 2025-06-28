@@ -1,28 +1,29 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.6-eclipse-temurin-21'
-            args '-v /var/jenkins_home/.m2:/root/.m2'
-        }
+    agent any
+
+    environment {
+        MAVEN_HOME = tool 'Maven'
+        PATH = "${MAVEN_HOME}/bin:${env.PATH}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: 'github-https-pat', branch: 'master', url: 'https://github.com/necromancer404/devops.git'
+                git credentialsId: 'github-https-pat', url: 'https://github.com/necromancer404/devops.git'
             }
         }
 
         stage('Build & Test') {
             steps {
-                sh 'mvn -Dmaven.repo.local=$WORKSPACE/.m2repo clean package'
+                sh 'mvn clean package'
+                // Commented out until JUnit plugin is installed:
+                // junit '**/target/surefire-reports/*.xml'
             }
         }
 
         stage('Archive Artifacts and Reports') {
             steps {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                junit 'target/surefire-reports/*.xml'
             }
         }
     }
